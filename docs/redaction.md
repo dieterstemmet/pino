@@ -108,6 +108,15 @@ By way of example, the following are all valid paths:
 * `["a-b"].c`
 * `a.b.*`
 * `a[*].b`
+* `*.secret`
+
+The asterisk matches an entire path segment (a whole key name or array
+index), not a substring within a key name. For example, `*.secret` redacts
+the key named `secret` under any parent object, but patterns such as
+`*secret` or `password*` do **not** match keys like `my_secret` or
+`passwordHash`. To redact those keys, list each path explicitly (for
+example `my_secret` and `passwordHash`, or `*.passwordHash` for a nested
+key of that exact name).
 
 ## Overhead
 
