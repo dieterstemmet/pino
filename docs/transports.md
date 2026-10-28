@@ -484,7 +484,7 @@ pino(transport)
 
 The `options.destination` property may also be a number to represent a file descriptor. Typically this would be `1` to write to STDOUT or `2` to write to STDERR. If `options.destination` is not set, it defaults to `1` which means logs will be written to STDOUT. If `options.destination` is a string integer, e.g. `'1'`, it will be coerced to a number and used as a file descriptor. If this is not desired, provide a full path, e.g. `/tmp/1`.
 
-The difference between using the `pino/file` transport builtin and using `pino.destination` is that `pino.destination` runs in the main thread, whereas `pino/file` sets up `pino.destination` in a worker thread.
+The difference between using the `pino/file` transport builtin and using `pino.destination` is that `pino.destination` runs in the main thread, whereas `pino/file` sets up `pino.destination` in a worker thread. A worker thread is useful for isolation and for heavier or multi-destination processing; it is not automatically faster than logging to stdout with the default destination. For the recommended stdout production setup, see [Best performance for logging to `stdout`](help.md#best-performance-for-stdout).
 
 #### `pino-pretty`
 

@@ -344,6 +344,17 @@ default configuration:
 const log = require('pino')();
 ```
 
+That is the same as `pino(pino.destination(1))`: newline-delimited JSON written on the
+main thread via a fast destination stream. In a typical production setup a process
+manager, container runtime, or log agent collects stdout — you do not need to tweak
+Pino further for that case.
+
+Worker transports such as `pino.transport({ target: 'pino/file' })` also default to
+stdout, but moving log writes off the main thread is **not** faster for stdout-only
+logging. It adds serialization and thread handoff overhead. Use a transport when you
+need more than one destination, or when in-process processing would otherwise block
+the event loop. See [Transports](transports.md).
+
 You should only have to configure custom transports or other settings
 if you have broader logging requirements.
 
