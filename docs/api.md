@@ -478,6 +478,7 @@ deliberate: it allows a child logger to precompute its bindings and stay fast at
 time. If a serializer needs to run per log call, pass the value to the log method
 instead of to `child()`.
 
+* See [Serializers guide](serializers.md)
 * See [pino.stdSerializers](#pino-stdserializers)
 
 #### `msgPrefix` (String)
