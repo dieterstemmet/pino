@@ -23,4 +23,5 @@
   * [Mapping Pino Log Levels to Google Cloud Logging (Stackdriver) Severity Levels](/docs/help.md#stackdriver)
   * [Avoid Message Conflict](/docs/help.md#avoid-message-conflict)
   * [Best performance for logging to `stdout`](/docs/help.md#best-performance-for-stdout)
+  * [Can't resolve `pino-pretty` with webpack / bundlers](/docs/help.md#pino-pretty-resolve)
   * [Testing](/docs/help.md#testing)

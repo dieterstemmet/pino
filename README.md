@@ -87,9 +87,14 @@ For using Pino with a web framework see:
 ### Development Formatting
 
 The [`pino-pretty`](https://github.com/pinojs/pino-pretty) module can be used to
-format logs during development:
+format logs during development (install it separately; the old `prettyPrint`
+option was removed — use `transport: { target: 'pino-pretty' }`):
 
 ![pretty demo](pretty-demo.png)
+
+See [Pretty Printing](docs/pretty.md). Bundlers that warn
+`Can't resolve 'pino-pretty'` when you are not prettifying should treat it as
+external — see [Bundling](docs/bundling.md#pino-pretty-optional).
 
 ### Transports & Log Processing
 

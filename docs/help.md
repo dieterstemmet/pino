@@ -14,6 +14,7 @@
 * [Using Grafana Loki to evaluate pino logs in a kubernetes cluster](#grafana-loki)
 * [Avoid Message Conflict](#avoid-message-conflict)
 * [Best performance for logging to `stdout`](#best-performance-for-stdout)
+* [Can't resolve `pino-pretty` with webpack / bundlers](#pino-pretty-resolve)
 * [Testing](#testing)
 
 <a id="rotate"></a>
@@ -346,6 +347,18 @@ const log = require('pino')();
 
 You should only have to configure custom transports or other settings
 if you have broader logging requirements.
+
+<a id="pino-pretty-resolve"></a>
+## Can't resolve `pino-pretty` with webpack / bundlers
+
+`pino-pretty` is an optional dependency of your app, not of Pino. The legacy
+`prettyPrint` option was removed; use
+`transport: { target: 'pino-pretty' }` after installing `pino-pretty`, or pipe
+stdout to the `pino-pretty` CLI. See [Pretty Printing](pretty.md).
+
+If a bundler still warns `Can't resolve 'pino-pretty'` when you are not using
+that transport, mark the module external / ignored so it is not resolved into
+the bundle. Details and examples: [Bundling — `pino-pretty` is optional](bundling.md#pino-pretty-optional).
 
 <a id="testing"></a>
 ## Testing

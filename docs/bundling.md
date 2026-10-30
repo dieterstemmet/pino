@@ -7,7 +7,7 @@ In particular, a bundler must ensure that the following files are also bundled s
 * `lib/worker.js` from the `thread-stream` dependency
 * `file.js`
 * `lib/worker.js`
-* Any transport used by the user (like `pino-pretty`)
+* Any transport the application actually uses (for example `pino-pretty`, only if configured)
 
 Once the files above have been generated, the bundler must also add information about the files above by injecting a code that sets `__bundlerPathsOverrides` in the `globalThis` object.
 
@@ -21,11 +21,31 @@ globalThis.__bundlerPathsOverrides = {
   'thread-stream-worker': pinoWebpackAbsolutePath('./thread-stream-worker.js')
   'pino/file': pinoWebpackAbsolutePath('./pino-file.js'),
   'pino-worker': pinoWebpackAbsolutePath('./pino-worker.js'),
-  'pino-pretty': pinoWebpackAbsolutePath('./pino-pretty.js'),
+  // Include pino-pretty only when the app uses that transport:
+  // 'pino-pretty': pinoWebpackAbsolutePath('./pino-pretty.js'),
 };
 ```
 
 Note that `pino/file`, `pino-worker` and `thread-stream-worker` are required identifiers. Other identifiers are possible based on the user configuration.
+
+<a id="pino-pretty-optional"></a>
+## `pino-pretty` is optional
+
+[`pino-pretty`](https://github.com/pinojs/pino-pretty) is a separate package.
+Pino loads it only when you set `transport: { target: 'pino-pretty' }` (or an
+equivalent transport target). The old `prettyPrint` option is gone; see
+[Pretty Printing](pretty.md).
+
+Bundlers that statically scan `node_modules` may still try to resolve
+`pino-pretty` and report `Module not found: Can't resolve 'pino-pretty'`.
+That warning is safe to silence when you are not using the pretty transport:
+
+* Webpack: add `'pino-pretty'` to [`externals`](https://webpack.js.org/configuration/externals/), or use [pino-webpack-plugin](https://github.com/pinojs/pino-webpack-plugin).
+* Rollup: ignore `pino-pretty` in the CommonJS plugin (for example `commonjs({ ignore: ['pino-pretty'] })`).
+* Next.js and similar frameworks: treat `pino` / `pino-pretty` as server externals so they are not bundled into the client graph.
+
+Install `pino-pretty` only when you want prettified development output; do not
+add it to production bundles unless that transport is actually configured.
 
 ## Webpack Plugin
 
