@@ -14,6 +14,7 @@
 * [Using Grafana Loki to evaluate pino logs in a kubernetes cluster](#grafana-loki)
 * [Avoid Message Conflict](#avoid-message-conflict)
 * [Best performance for logging to `stdout`](#best-performance-for-stdout)
+* [Logs missing in the debugger console (`node --inspect`)](#inspect-console)
 * [Testing](#testing)
 
 <a id="rotate"></a>
@@ -346,6 +347,52 @@ const log = require('pino')();
 
 You should only have to configure custom transports or other settings
 if you have broader logging requirements.
+
+<a id="inspect-console"></a>
+## Logs missing in the debugger console (`node --inspect`)
+
+Pino writes newline-delimited JSON to a destination stream — by default
+`stdout`, or a file / [transport](transports.md) you configure. It does **not**
+call `console.log`, and it does not emit into the Chrome DevTools Console.
+
+When you start Node with `--inspect` or `--inspect-brk` and open DevTools (or an
+IDE debugger attached the same way), the **Console** panel shows messages from
+`console.*` and the inspector. Stdout still appears in the terminal that launched
+the process (and in some IDE “Debug Console” views that also capture process
+stdio). If you only look at the DevTools Console tab, Pino output looks “missing”
+even though logging works.
+
+Practical workarounds for local debugging:
+
+1. **Watch the process stdout** in the terminal (or an IDE panel that shows
+   stdio), not only the DevTools Console.
+2. **Mirror to `console` in development** with the [`logMethod` hook](api.md#logmethod)
+   so DevTools shows the same calls (keep this behind a debug flag; do not use it
+   for production throughput):
+
+   ```js
+   const logger = pino({
+     hooks: {
+       logMethod (args, method) {
+         if (process.env.PINO_DEBUG_CONSOLE) {
+           console.log(...args)
+         }
+         return method.apply(this, args)
+       }
+     }
+   })
+   ```
+
+3. **Synchronous destination while debugging** (`pino.destination({ sync: true })`
+   or a plain writable) if async buffering makes lines hard to correlate with
+   breakpoints. See [Asynchronous Logging](asynchronous.md).
+
+Worker-thread [transports](transports.md) run off the main thread, so mirroring
+through `node:inspector` from a transport worker is unreliable. Prefer a main-thread
+hook or destination when you need DevTools visibility.
+
+A former [`pino-inspector`](https://github.com/pinojs/pino-inspector) helper targeted
+this use case but is unmaintained; the hook above is usually enough for debugging.
 
 <a id="testing"></a>
 ## Testing

@@ -23,4 +23,5 @@
   * [Mapping Pino Log Levels to Google Cloud Logging (Stackdriver) Severity Levels](/docs/help.md#stackdriver)
   * [Avoid Message Conflict](/docs/help.md#avoid-message-conflict)
   * [Best performance for logging to `stdout`](/docs/help.md#best-performance-for-stdout)
+  * [Logs missing in the debugger console (`node --inspect`)](/docs/help.md#inspect-console)
   * [Testing](/docs/help.md#testing)
